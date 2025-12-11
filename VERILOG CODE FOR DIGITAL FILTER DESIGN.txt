@@ -1,0 +1,37 @@
+VERILOG CODE FOR DIGITAL FILTER DESIGN
+
+module FIR_Filter(
+    input clk,
+    input reset,
+    input [7:0] x,          // Input sample
+    output reg [15:0] y     // Output filtered value
+);
+
+    // 4-tap filter coefficients
+    parameter h0 = 8'd1;
+    parameter h1 = 8'd2;
+    parameter h2 = 8'd3;
+    parameter h3 = 8'd4;
+
+    // Delay line registers for past samples
+    reg [7:0] x1, x2, x3;
+
+    always @(posedge clk or posedge reset) begin
+        if (reset) begin
+            x1 <= 0; x2 <= 0; x3 <= 0;
+            y <= 0;
+        end else begin
+            // Shift input samples
+            x3 <= x2;
+            x2 <= x1;
+            x1 <= x;
+
+            // FIR Equation
+            y <= (h0 * x)  +
+                 (h1 * x1) +
+                 (h2 * x2) +
+                 (h3 * x3);
+        end
+    end
+
+endmodule

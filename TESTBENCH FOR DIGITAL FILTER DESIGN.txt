@@ -1,0 +1,41 @@
+TESTBENCH FOR DIGITAL FILTER DESIGN
+
+`timescale 1ns/1ps
+
+module FIR_TB;
+
+    reg clk, reset;
+    reg [7:0] x;
+    wire [15:0] y;
+
+    // Instantiate FIR filter
+    FIR_Filter uut (.clk(clk), .reset(reset), .x(x), .y(y));
+
+    // Generate clock – 10ns period
+    always #5 clk = ~clk;
+
+    initial begin
+        // Generate waveform
+        $dumpfile("fir.vcd");
+        $dumpvars(0, FIR_TB);
+
+        clk = 0;
+        reset = 1;
+        x = 0;
+
+        #10 reset = 0;
+
+        // Apply sequence of inputs (impulse, steps, random)
+        x = 8'd10; #10;
+        x = 8'd20; #10;
+        x = 8'd30; #10;
+        x = 8'd40; #10;
+        x = 8'd0;  #10;
+        x = 8'd0;  #10;
+        x = 8'd0;  #10;
+
+        #100;
+        $finish;
+    end
+
+endmodule
